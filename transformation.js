@@ -75,6 +75,13 @@ const triangle = [
     {x : 2, y : 3}
 ]
 
+// function multiplyMatrixVector(matrix, point){
+//     return{
+//         x : matrix[0][0]*point.x + matrix[0][1]*point.y,
+//         y : matrix[1][0]*point.x + matrix[1][1]*point.y
+//     };
+// }
+
 function drawPoint(x, y){
     ctx.beginPath();
     ctx.arc(x*gridSize, y*gridSize, 5, 0, Math.PI *2);
@@ -96,17 +103,54 @@ function drawTriangle(points){
 
 let currentTriangle = triangle;
 
-function scalePoint(point, factor){
-    return {
-        x: point.x*factor,
-        y: point.y*factor
-    }
+// function scalePoint(point, factor){
+//     return {
+//         x: point.x*factor,
+//         y: point.y*factor
+//     }
+// }
+
+// function scaleTriangle(points, factor){
+//     return points.map(point => scalePoint(point, factor));
+// }
+
+// New matrix multiplication code
+function multiplyMatrixVector(matrix, point){
+    return{
+        x : matrix[0][0]*point.x + matrix[0][1]*point.y + matrix[0][2]*1,
+        y : matrix[1][0]*point.x + matrix[1][1]*point.y + matrix[1][2]*1,
+    };
 }
 
-function scaleTriangle(points, factor){
-    return points.map(point => scalePoint(point, factor));
+//Reflection matrix
+const reflectionY = [
+    [-1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1]
+];
+
+const scalingMatrix = [
+    [2, 0, 0], 
+    [0, 2, 0],
+    [0, 0, 1]
+]
+
+const rotatingMatrix = [
+    [0, -1, 0],
+    [1, 0, 0],
+    [0, 0, 1]
+]
+
+const translatingMatrix = [
+    [1, 0, 2],
+    [0, 1, 1],
+    [0, 0, 1]
+]
+
+function transformTriangle(points, matrix){
+    return points.map(point => multiplyMatrixVector(matrix, point));
+    //Take every point in points, transform it, and make a new array containing the transformed points
 }
 
-currentTriangle = scaleTriangle(triangle, 2);
-
+currentTriangle = transformTriangle(triangle, translatingMatrix);
 drawTriangle(currentTriangle);
